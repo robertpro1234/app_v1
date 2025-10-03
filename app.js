@@ -6,7 +6,23 @@
 
 const app = require('express')();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const { Server } = require('socket.io');
+const cors = require('cors');
+
+// Enable CORS for all origins
+app.use(cors());
+
+// Configure Socket.IO with CORS
+const io = new Server(http, {
+  cors: {
+    origin: "https://app-v1-dyv6.onrender.com/", // Allow all origins ==>> https://app-v1-dyv6.onrender.com/
+    methods: ["GET", "POST"]
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+let time_count = 3000;
+let count = 0;
 
 app.get('/hello', (req, res) => {
   res.json({ msg: 'Hello from server' });
@@ -25,14 +41,12 @@ io.on('connection', function(socket){
 	})
 });
 
-const PORT = process.env.PORT || 3000;
 http.listen(PORT, function(){
 	console.log(`Server running on port ${PORT}`);
 })
-let count = 0;
+
 setInterval(function() {
 
 	io.emit('msg_to_client','to client, Innocent Test msg ==>> '+ count);
 	count++;
-},3000)
-
+},time_count)
