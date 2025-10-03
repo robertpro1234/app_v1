@@ -25,8 +25,9 @@ io.on('connection', function(socket){
 	})
 });
 
-http.listen(3000, function(){
-	console.log('Listening to port 3000');
+const PORT = process.env.PORT || 3000;
+http.listen(PORT, function(){
+	console.log(`Server running on port ${PORT}`);
 })
 let count = 0;
 setInterval(function() {
@@ -34,3 +35,4 @@ setInterval(function() {
 	io.emit('msg_to_client','to client, Innocent Test msg ==>> '+ count);
 	count++;
 },3000)
+
